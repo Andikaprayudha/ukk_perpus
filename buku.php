@@ -28,7 +28,7 @@ include "koneksi.php";
                         <?php
                         $i = 1;
                         // Sesuaikan query ini dengan nama tabel dan kolom di database Anda
-                        // Pastikan ada JOIN jika ingin menampilkan nama kategori dari tabel lain
+                        // Pastikan ada JOIN jika ingin menampilkan nama kategori dari tabel lain.
                         $query_buku = mysqli_query($koneksi, "SELECT b.*, k.kategori AS nama_kategori
                                                                FROM buku b
                                                                LEFT JOIN kategori k ON b.id_kategori = k.id_kategori");
