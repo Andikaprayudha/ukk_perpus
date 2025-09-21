@@ -21,6 +21,7 @@ include "koneksi.php";
                             <th>Penerbit</th>
                             <th>Tahun Terbit</th>
                             <th>Deskripsi</th>
+                            <th>File</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -28,7 +29,7 @@ include "koneksi.php";
                         <?php
                         $i = 1;
                         // Sesuaikan query ini dengan nama tabel dan kolom di database Anda
-                        // Pastikan ada JOIN jika ingin menampilkan nama kategori dari tabel lain.
+                        // Pastikan ada JOIN jika ingin menampilkan nama kategori dari tabel lain
                         $query_buku = mysqli_query($koneksi, "SELECT b.*, k.kategori AS nama_kategori
                                                                FROM buku b
                                                                LEFT JOIN kategori k ON b.id_kategori = k.id_kategori");
@@ -47,9 +48,15 @@ include "koneksi.php";
                                     <td><?php echo htmlspecialchars($data_buku['tahun_terbit']); ?></td>
                                     <td><?php echo htmlspecialchars($data_buku['deskripsi']); ?></td>
                                     <td>
+                                        <?php if(!empty($data_buku['file_buku'])): ?>
+                                            <a href="uploads/buku/<?php echo $data_buku['file_buku']; ?>" class="btn btn-success btn-sm" target="_blank">Unduh</a>
+                                        <?php else: ?>
+                                            <span class="text-muted">Tidak ada file</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
                                         <a href="?page=buku_ubah&id=<?php echo $data_buku['id_buku']; ?>" class="btn btn-info btn-sm">Ubah</a>
                                         <a href="?page=buku_hapus&id=<?php echo $data_buku['id_buku']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus buku ini?');">Hapus</a>
-
                                     </td>
                                 </tr>
                                 <?php
