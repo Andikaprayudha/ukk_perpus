@@ -1,4 +1,10 @@
 <?php
-session_start(); 
+require_once 'includes/config.php';
+
+// Hapus semua data session
+session_unset();
 session_destroy();
-header("Location: login.php"); 
+
+// Redirect ke halaman login
+redirect('login.php');
+?>

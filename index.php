@@ -1,188 +1,245 @@
 <?php
-session_start();
-include "koneksi.php";
+// Aktifkan tampilan error untuk debugging
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-if (!isset($_SESSION['user'])) {
-    header('Location: login.php');
-    exit;
+// Mulai session jika belum dimulai
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
 }
-?>
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>Perpustakaan Digital</title>
-        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-        <link href="css/styles.css" rel="stylesheet" />
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    </head>
-    <body class="sb-nav-fixed">
-        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-            <a class="navbar-brand ps-3" href="index.php">Perpustakaan Digital</a>
-            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
-            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-                <div class="input-group">
-                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-                    <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
-                </div>
-            </form>
-            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#!">Settings</a></li>
-                        <li><a class="dropdown-item" href="#!">Activity Log</a></li>
-                        <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" href="logout.php">Logout</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-        <div id="layoutSidenav">
-            <div id="layoutSidenav_nav">
-                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                    <div class="sb-sidenav-menu">
-                        <div class="nav">
-                            <div class="sb-sidenav-menu-heading">Core</div>
-                            <a class="nav-link" href="?page=home">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Dashboard
-                            </a>
-                            <div class="sb-sidenav-menu-heading">Navigasi</div>
-                            <?php
-                                if(isset($_SESSION['user']) && ($_SESSION['user']['level'] =='admin' || $_SESSION['user']['level'] == 'petugas')){ // Admin dan Petugas
-                            ?>
-                            <a class="nav-link" href="?page=kategori">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Kategori
-                            </a>
-                            <a class="nav-link" href="?page=buku">
-                                <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
-                                Buku
-                            </a>
-                            <a class="nav-link" href="?page=peminjaman">
-                                <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                                Peminjaman
-                            </a>
-                            <a class="nav-link" href="?page=user"> <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                                User
-                            </a>
-                            <?php
-                                } else if(isset($_SESSION['user']) && $_SESSION['user']['level'] == 'peminjam'){ // Peminjam
-                            ?>
-                            <a class="nav-link" href="?page=peminjaman">
-                                <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                                Peminjaman
-                            </a>
-                            <?php
-                                }
-                            ?>
-                            <a class="nav-link" href="?page=ulasan"> <div class="sb-nav-link-icon"><i class="fas fa-comment"></i></div>
-                                Ulasan
-                            </a>
-                            <a class="nav-link" href="logout.php">
-                                <div class="sb-nav-link-icon"><i class="fa fa-power-off"></i></div>
-                                Logout
-                            </a>
-                        </div>
-                    </div>
-                    <div class="sb-sidenav-footer">
-                        <div class="small">Logged in as:</div>
-                        <?php echo $_SESSION['user']['username']; // Menggunakan username karena lebih umum ?>
-                    </div>
-                </nav>
-            </div>
-            <div id="layoutSidenav_content">
-                <main>
-                    <div class="container-fluid px-4">
-                        <?php
-                        $page = isset($_GET['page']) ? $_GET['page'] : 'home';
 
-                        switch ($page) {
-                            case 'home':
-                                include 'home.php';
-                                break;
-                            case 'kategori':
-                                include 'kategori.php';
-                                break;
-                            case 'kategori_tambah':
-                                include 'kategori_tambah.php';
-                                break;
-                            case 'kategori_ubah':
-                                include 'kategori_ubah.php';
-                                break;
-                            case 'kategori_hapus':
-                                include 'kategori_hapus.php';
-                                break;
-                            case 'buku':
-                                include 'buku.php';
-                                break;
-                            case 'buku_tambah':
-                                include 'buku_tambah.php';
-                                break;
-                            case 'buku_ubah':
-                                include 'buku_ubah.php';
-                                break;
-                            case 'buku_hapus':
-                                include 'buku_hapus.php';
-                                break;
-                            case 'ulasan':
-                                include 'ulasan.php';
-                                break;
-                            case 'ulasan_tambah':
-                                include 'ulasan_tambah.php';
-                                break;
-                            case 'ulasan_ubah':
-                                include 'ulasan_ubah.php';
-                                break;
-                            case 'ulasan_hapus':
-                                include 'ulasan_hapus.php';
-                                break;
-                            // Tambahan untuk Peminjaman
-                            case 'peminjaman':
-                                include 'peminjaman.php';
-                                break;
-                            case 'peminjaman_tambah':
-                                include 'peminjaman_tambah.php';
-                                break;
-                            case 'peminjaman_kembalikan':
-                                include 'peminjaman_kembalikan.php';
-                                break;
-                            case 'peminjaman_hapus':
-                                include 'peminjaman_hapus.php';
-                                break;
-                            case 'user': // <--- BAGIAN INI DITAMBAHKAN
-                                include 'user.php';
-                                break;
-                            case 'logout':
-                                include 'logout.php';
-                                break;
-                            default:
-                                include '404.php';
-                                break;
-                        }
-                        ?>
-                    </div>
-                </main>
-                <footer class="py-4 bg-light mt-auto">
-                    <div class="container-fluid px-4">
-                        <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; Perpustakaan Digital 2023</div>
-                        </div>
-                    </div>
-                </footer>
+require_once 'includes/config.php';
+
+// Ambil buku terbaru
+$query = "SELECT b.*, k.nama as kategori_nama FROM buku b 
+          LEFT JOIN kategori k ON b.kategori_id = k.id 
+          ORDER BY b.created_at DESC LIMIT 8";
+$result = mysqli_query($conn, $query);
+$buku_terbaru = [];
+if ($result) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $buku_terbaru[] = $row;
+    }
+}
+
+// Ambil kategori untuk ditampilkan
+$query_kategori = "SELECT k.*, COUNT(b.id) as jumlah_buku 
+                  FROM kategori k 
+                  LEFT JOIN buku b ON k.id = b.kategori_id 
+                  GROUP BY k.id 
+                  ORDER BY jumlah_buku DESC 
+                  LIMIT 6";
+$result_kategori = mysqli_query($conn, $query_kategori);
+$kategori_populer = [];
+if ($result_kategori) {
+    while ($row = mysqli_fetch_assoc($result_kategori)) {
+        $kategori_populer[] = $row;
+    }
+}
+
+include 'includes/header.php';
+?>
+
+<!-- Hero Section -->
+<section class="hero bg-primary text-white text-center py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4">Selamat Datang di Perpustakaan Digital</h1>
+                <p class="lead mb-4">Temukan ribuan buku dari berbagai kategori. Baca, pinjam, dan tingkatkan pengetahuan Anda bersama kami.</p>
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                    <a href="katalog.php" class="btn btn-light btn-lg px-4 gap-3">
+                        <i class="fas fa-book-open me-2"></i>Jelajahi Katalog
+                    </a>
+                    <?php if (!isset($_SESSION['user_id'])): ?>
+                    <a href="register.php" class="btn btn-outline-light btn-lg px-4">
+                        <i class="fas fa-user-plus me-2"></i>Daftar Sekarang
+                    </a>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="js/scripts.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="assets/demo/chart-area-demo.js"></script>
-        <script src="assets/demo/chart-bar-demo.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
-        <script src="js/datatables-simple-demo.js"></script>
-    </body>
-</html>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Layanan Kami</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-4">
+                            <i class="fas fa-book fa-2x p-3"></i>
+                        </div>
+                        <h3 class="fs-4">Koleksi Lengkap</h3>
+                        <p class="mb-0">Akses ke ribuan judul buku dari berbagai kategori dan genre untuk semua usia.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-4">
+                            <i class="fas fa-laptop fa-2x p-3"></i>
+                        </div>
+                        <h3 class="fs-4">Akses Digital</h3>
+                        <p class="mb-0">Pinjam buku secara online dan akses kapan saja dan di mana saja.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-4">
+                            <i class="fas fa-sync fa-2x p-3"></i>
+                        </div>
+                        <h3 class="fs-4">Peminjaman Mudah</h3>
+                        <p class="mb-0">Proses peminjaman dan pengembalian yang cepat dan efisien tanpa ribet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Latest Books Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Buku Terbaru</h2>
+            <a href="katalog.php" class="btn btn-outline-primary">Lihat Semua</a>
+        </div>
+        
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            <?php foreach ($buku_terbaru as $buku): ?>
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="position-relative book-cover">
+                            <?php if (!empty($buku['gambar']) && file_exists('uploads/buku/' . $buku['gambar'])): ?>
+                                <img src="uploads/buku/<?= $buku['gambar'] ?>" class="card-img-top" alt="<?= $buku['judul'] ?>" style="height: 250px; object-fit: cover;">
+                            <?php else: ?>
+                                <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 250px;">
+                                    <i class="fas fa-book fa-3x text-secondary"></i>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($buku['stok'] > 0): ?>
+                                <span class="position-absolute top-0 end-0 badge bg-success m-2">Tersedia</span>
+                            <?php else: ?>
+                                <span class="position-absolute top-0 end-0 badge bg-danger m-2">Stok Habis</span>
+                            <?php endif; ?>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title text-truncate"><?= $buku['judul'] ?></h5>
+                            <p class="card-text text-muted mb-0">Oleh: <?= $buku['penulis'] ?></p>
+                            <p class="card-text"><small class="text-muted"><?= $buku['kategori_nama'] ?? 'Umum' ?></small></p>
+                        </div>
+                        <div class="card-footer bg-white border-top-0">
+                            <a href="detail_buku.php?id=<?= $buku['id'] ?>" class="btn btn-primary w-100">Lihat Detail</a>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+            
+            <?php if (empty($buku_terbaru)): ?>
+                <div class="col-12 text-center py-5">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>Belum ada buku yang tersedia.
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Kategori Populer</h2>
+            <a href="katalog.php" class="btn btn-outline-primary">Lihat Semua Kategori</a>
+        </div>
+        
+        <div class="row g-4">
+            <?php foreach ($kategori_populer as $kategori): ?>
+                <div class="col-md-4 col-lg-2">
+                    <a href="katalog.php?kategori=<?= $kategori['id'] ?>" class="text-decoration-none">
+                        <div class="card h-100 border-0 shadow-sm text-center">
+                            <div class="card-body">
+                                <div class="category-icon rounded-circle bg-primary bg-opacity-10 mx-auto mb-3">
+                                    <i class="fas fa-bookmark text-primary fa-2x p-3"></i>
+                                </div>
+                                <h5 class="card-title"><?= $kategori['nama'] ?></h5>
+                                <p class="card-text text-muted"><?= $kategori['jumlah_buku'] ?> buku</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+            
+            <?php if (empty($kategori_populer)): ?>
+                <div class="col-12 text-center py-3">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>Belum ada kategori yang tersedia.
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white text-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h2 class="mb-4">Siap untuk mulai membaca?</h2>
+                <p class="lead mb-4">Bergabunglah dengan perpustakaan digital kami dan akses ribuan buku dengan mudah.</p>
+                <?php if (!isset($_SESSION['user_id'])): ?>
+                    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                        <a href="login.php" class="btn btn-light btn-lg px-4 me-sm-3">Masuk</a>
+                        <a href="register.php" class="btn btn-outline-light btn-lg px-4">Daftar</a>
+                    </div>
+                <?php else: ?>
+                    <a href="katalog.php" class="btn btn-light btn-lg px-4">Jelajahi Katalog</a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 70px;
+}
+
+.category-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+}
+
+.book-cover img {
+    transition: transform 0.3s ease;
+}
+
+.book-cover:hover img {
+    transform: scale(1.05);
+}
+
+.hero {
+    background: linear-gradient(rgba(13, 110, 253, 0.9), rgba(13, 110, 253, 0.7)), url('assets/img/library-bg.jpg');
+    background-size: cover;
+    background-position: center;
+}
+</style>
+
+<?php include 'includes/footer.php'; ?>
