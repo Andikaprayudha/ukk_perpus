@@ -1,6 +1,17 @@
 <?php
 require_once 'includes/config.php';
-require_once 'includes/functions.php';
+
+// Cek apakah file functions.php ada, jika tidak ada, buat fungsi setFlashMessage
+if (!file_exists('includes/functions.php')) {
+    function setFlashMessage($type, $message) {
+        $_SESSION['flash_message'] = [
+            'type' => $type,
+            'message' => $message
+        ];
+    }
+} else {
+    require_once 'includes/functions.php';
+}
 
 // Cek apakah user sudah login
 if (!isset($_SESSION['user_id'])) {
@@ -14,7 +25,7 @@ $error = '';
 $success = '';
 
 // Ambil data user
-$stmt = $conn->prepare("SELECT * FROM user WHERE id = ?");
+$stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -109,7 +120,7 @@ $stmt = $conn->prepare("
     FROM ulasan u 
     JOIN buku b ON u.buku_id = b.id 
     WHERE u.user_id = ? 
-    ORDER BY u.tanggal_ulasan DESC 
+    ORDER BY u.created_at DESC 
     LIMIT 5
 ");
 $stmt->bind_param("i", $user_id);
@@ -150,7 +161,7 @@ require_once 'includes/header.php';
                         <img src="assets/img/user-avatar.png" alt="Profile" class="rounded-circle img-fluid" style="width: 120px;">
                     </div>
                     <h5 class="mb-1"><?= htmlspecialchars($user['nama']) ?></h5>
-                    <p class="text-muted mb-3"><?= htmlspecialchars($user['level']) ?></p>
+                    <p class="text-muted mb-3"><?= htmlspecialchars($user['role']) ?></p>
                     <div class="d-flex justify-content-center">
                         <div class="px-3 border-end">
                             <h6 class="mb-0"><?= $total_peminjaman ?></h6>
@@ -211,7 +222,7 @@ require_once 'includes/header.php';
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label for="telepon" class="form-label">Nomor Telepon</label>
-                                        <input type="text" class="form-control" id="telepon" name="telepon" value="<?= htmlspecialchars($user['telepon']) ?>" required>
+                                        <input type="text" class="form-control" id="telepon" name="telepon" value="<?= htmlspecialchars($user['telepon'] ?? '') ?>" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="username" class="form-label">Username</label>

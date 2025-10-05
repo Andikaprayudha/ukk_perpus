@@ -150,14 +150,43 @@ function markAllNotificationsAsRead($conn, $user_id) {
  * Conta o número de notificações não lidas para um usuário
  */
 function countUnreadNotifications($conn, $user_id) {
-    $query = "SELECT COUNT(*) as count FROM notifikasi WHERE user_id = ? AND is_read = 0";
+    // Periksa apakah tabel notifikasi ada
+    $table_exists = $conn->query("SHOW TABLES LIKE 'notifikasi'");
+    if ($table_exists->num_rows == 0) {
+        // Tabel tidak ada, buat tabel
+        $create_table = "
+        CREATE TABLE IF NOT EXISTS notifikasi (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            peminjaman_id INT DEFAULT NULL,
+            type ENUM('reminder', 'overdue', 'info') NOT NULL,
+            message TEXT NOT NULL,
+            is_read TINYINT(1) NOT NULL DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (peminjaman_id) REFERENCES peminjaman(id) ON DELETE SET NULL
+        )";
+        
+        try {
+            $conn->query($create_table);
+        } catch (Exception $e) {
+            // Jika gagal membuat tabel, kembalikan 0
+            return 0;
+        }
+    }
     
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
-    
-    return $row['count'];
+    try {
+        $query = "SELECT COUNT(*) as count FROM notifikasi WHERE user_id = ? AND is_read = 0";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row['count'];
+    } catch (Exception $e) {
+        // Jika query gagal, kembalikan 0
+        return 0;
+    }
 }
 ?>

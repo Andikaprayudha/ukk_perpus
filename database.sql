@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
+    telepon VARCHAR(20),
     alamat TEXT,
     role ENUM('admin', 'petugas', 'anggota') NOT NULL DEFAULT 'anggota',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

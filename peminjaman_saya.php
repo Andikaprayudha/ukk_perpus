@@ -30,7 +30,7 @@ if (!empty($status_filter)) {
         $status_params[] = 'dikembalikan';
         $status_types = "s";
     } elseif ($status_filter == 'terlambat') {
-        $status_query = " AND p.status = 'dipinjam' AND p.tanggal_harus_kembali < CURDATE()";
+        $status_query = " AND p.status = 'dipinjam' AND p.tanggal_kembali < CURDATE()";
     }
 }
 
@@ -41,7 +41,7 @@ $query = "SELECT p.*, b.judul as judul_buku, b.penulis, b.gambar
           WHERE p.user_id = ?" . $status_query . "
           ORDER BY 
             CASE 
-                WHEN p.status = 'dipinjam' AND p.tanggal_harus_kembali < CURDATE() THEN 1
+                WHEN p.status = 'dipinjam' AND p.tanggal_kembali < CURDATE() THEN 1
                 WHEN p.status = 'dipinjam' THEN 2
                 ELSE 3
             END,
