@@ -9,7 +9,10 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/css/style.css">
+    <?php 
+    $baseUrl = isset($isAdmin) && $isAdmin ? '../' : '';
+    ?>
+    <link rel="stylesheet" href="<?= $baseUrl ?>assets/css/style.css">
 </head>
 <body>
     <header>
@@ -37,12 +40,11 @@
                         
                         <?php if (isset($_SESSION['user_id'])): ?>
                             <?php
-                            // Carrega o arquivo de notificações se ainda não foi carregado
-                            if (!function_exists('countUnreadNotifications')) {
-                                require_once 'includes/notifikasi.php';
-                            }
+                            // Load notification functions if not loaded
+                            $notifPath = isset($isAdmin) && $isAdmin ? '../includes/notifikasi.php' : 'includes/notifikasi.php';
+                            require_once $notifPath;
                             
-                            // Conta notificações não lidas
+                            // Count unread notifications
                             $unread_count = countUnreadNotifications($conn, $_SESSION['user_id']);
                             ?>
                             
