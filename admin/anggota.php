@@ -90,9 +90,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
         <div class="main-content">
             <div class="dashboard-header">
                 <h1>Manajemen Anggota</h1>
-                <div>
-                    <a href="anggota_tambah.php" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Anggota</a>
-                </div>
             </div>
             
             <?php

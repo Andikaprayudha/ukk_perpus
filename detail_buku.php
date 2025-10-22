@@ -242,7 +242,7 @@ include 'includes/header.php';
                                         </div>
                                     </div>
                                     <div class="text-muted">
-                                        <small><?= date('d/m/Y', strtotime($ulasan['tanggal'])) ?></small>
+                                        <small><?= isset($ulasan['tanggal']) ? date('d/m/Y', strtotime($ulasan['tanggal'])) : date('d/m/Y', strtotime($ulasan['created_at'] ?? '')) ?></small>
                                     </div>
                                 </div>
                                 <p class="mt-2"><?= nl2br($ulasan['ulasan']) ?></p>

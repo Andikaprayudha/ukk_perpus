@@ -116,6 +116,78 @@ if ($result) {
     <title>Manajemen Kategori - Perpustakaan Online</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Styling untuk modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1050;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        
+        .modal.show {
+            display: block;
+        }
+        
+        .modal-dialog {
+            position: relative;
+            width: auto;
+            margin: 10% auto;
+            max-width: 500px;
+        }
+        
+        .modal-content {
+            position: relative;
+            background-color: #fff;
+            border-radius: 6px;
+            box-shadow: 0 3px 9px rgba(0,0,0,.5);
+            padding: 20px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        
+        .modal-title {
+            margin: 0;
+        }
+        
+        .close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 20px 0;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        .modal-open {
+            overflow: hidden;
+        }
+    </style>
 </head>
 <body>
     <div class="dashboard">
@@ -140,7 +212,7 @@ if ($result) {
             <div class="dashboard-header">
                 <h1>Manajemen Kategori</h1>
                 <div>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tambahKategoriModal">
+                    <button type="button" class="btn btn-primary" id="tambahKategoriBtn">
                         <i class="fas fa-plus"></i> Tambah Kategori
                     </button>
                 </div>
@@ -218,7 +290,7 @@ if ($result) {
                             <label for="nama">Nama Kategori</label>
                             <input type="text" id="nama" name="nama" class="form-control" required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="margin-top: 20px;">
                             <button type="submit" name="tambah" class="btn btn-primary">Simpan</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                         </div>
@@ -263,6 +335,8 @@ if ($result) {
             // Tampilkan modal
             var modal = document.getElementById('editKategoriModal');
             modal.style.display = 'block';
+            modal.classList.add('show');
+            document.body.classList.add('modal-open');
         }
         
         // Fungsi untuk menutup modal
@@ -271,6 +345,8 @@ if ($result) {
             closeButtons[i].onclick = function() {
                 var modal = this.closest('.modal');
                 modal.style.display = 'none';
+                modal.classList.remove('show');
+                document.body.classList.remove('modal-open');
             }
         }
         
@@ -280,20 +356,30 @@ if ($result) {
             cancelButtons[i].onclick = function() {
                 var modal = this.closest('.modal');
                 modal.style.display = 'none';
+                modal.classList.remove('show');
+                document.body.classList.remove('modal-open');
             }
         }
         
         // Fungsi untuk menampilkan modal tambah kategori
-        var tambahButton = document.querySelector('[data-target="#tambahKategoriModal"]');
-        tambahButton.onclick = function() {
-            var modal = document.getElementById('tambahKategoriModal');
-            modal.style.display = 'block';
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            var tambahButton = document.getElementById('tambahKategoriBtn');
+            if (tambahButton) {
+                tambahButton.addEventListener('click', function() {
+                    var modal = document.getElementById('tambahKategoriModal');
+                    modal.style.display = 'block';
+                    modal.classList.add('show');
+                    document.body.classList.add('modal-open');
+                });
+            }
+        });
         
         // Tutup modal jika user mengklik di luar modal
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
+                event.target.classList.remove('show');
+                document.body.classList.remove('modal-open');
             }
         }
     </script>

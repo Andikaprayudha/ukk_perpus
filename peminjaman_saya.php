@@ -109,7 +109,7 @@ include 'includes/header.php';
                                 <?php
                                 // Cek status keterlambatan
                                 $status_display = $row['status'];
-                                if ($row['status'] == 'dipinjam' && date('Y-m-d') > $row['tanggal_harus_kembali']) {
+                                if ($row['status'] == 'dipinjam' && isset($row['tanggal_harus_kembali']) && date('Y-m-d') > $row['tanggal_harus_kembali']) {
                                     $status_display = 'terlambat';
                                 }
                                 
@@ -142,7 +142,7 @@ include 'includes/header.php';
                                         </div>
                                     </td>
                                     <td><?= date('d/m/Y', strtotime($row['tanggal_pinjam'])) ?></td>
-                                    <td><?= date('d/m/Y', strtotime($row['tanggal_harus_kembali'])) ?></td>
+                                    <td><?= isset($row['tanggal_harus_kembali']) ? date('d/m/Y', strtotime($row['tanggal_harus_kembali'])) : '-' ?></td>
                                     <td>
                                         <?php if ($status_display == 'dipinjam'): ?>
                                             <span class="badge bg-primary">Dipinjam</span>
