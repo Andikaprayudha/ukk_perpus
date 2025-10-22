@@ -236,7 +236,7 @@ include 'includes/header.php';
 }
 
 .hero {
-    background: linear-gradient(rgba(13, 110, 253, 0.9), rgba(13, 110, 253, 0.7)), url('assets/img/library-bg.jpg');
+    background: linear-gradient(rgba(13, 110, 253, 0.9), rgba(13, 110, 253, 0.7)), url('assets/img/library-bg.svg');
     background-size: cover;
     background-position: center;
 }
